@@ -168,8 +168,13 @@ void DataCompression::_LempelZiv_encode(char* data, size_t& length) {
 * @Param length: length of input/output data
 */
  size_t DataCompression::byte_compress(char* data, size_t& length) {
+	 if (length == 0) return 0;
+
 	string binary_form;
 	size_t res_len = 0;
+	size_t original_length = length;
+	char* data_copy = new char[length];
+	memcpy(data_copy, data, length);
 	for (size_t i = 0; i < length; i++)
 	{
 		string bit_num = std::bitset<7>(data[i]).to_string();
@@ -199,6 +204,13 @@ void DataCompression::_LempelZiv_encode(char* data, size_t& length) {
 
 	_LempelZiv_encode(data, length);
 
+	if (length > original_length) { //ended up bigger
+		data_copy[0] |= (1 << 7);
+		length = original_length;
+		memcpy(data, data_copy, original_length);
+	}
+
+	delete data_copy;
 	return length;
 }
 
@@ -242,6 +254,15 @@ void DataCompression::_LempelZiv_encode(char* data, size_t& length) {
 * @Param length: length of input/output data
 */
 size_t DataCompression::byte_decompress(char* data, size_t length) {
+
+	if (length == 0) return 0;
+
+	if (data[0] & (1 << 7)) // simple encoding
+	{
+		data[0] &= ~(1 << 7);
+		return length;
+	}
+
 	vector<int> v;
 	map<int, string> lexicon;
 	char* orig_data = data;
@@ -249,7 +270,6 @@ size_t DataCompression::byte_decompress(char* data, size_t length) {
 	//int final_length = _elias_decode(data, length);
 	int num_elems = _elias_decode(data, length);
 	int num_bits = _elias_decode(data, length);
-
 
 	_convert_data_to_vec(data, length, v, num_elems, num_bits);
 
