@@ -9,8 +9,8 @@ The algorithm uses the combination of Lempel–Ziv, Elias, and Custom pre-proces
 The class supports 2 public static function:
 
 | Function| Description| Input | Output |
-|----------------|-------------------------------|-----------------------------|-----------------------------|-----------------------------|
-|**byte_compress**| Compresses data| data and length |    the new length is returned and compressed data is overwritten in the original buffer                    |
+|----------------|-------------------------------|-----------------------------|-----------------------------|
+|**byte_compress**| Compresses data| data and length | the new length is returned and compressed data is overwritten in the original buffer                 |
 |**byte_decompress**       |Decompresses data| data and length |    the new length is returned and decompressed data is overwritten in the original buffer 
 
 *The data buffer need to be ensured that allocated correctly in size in order to fit decoded/encoded output
